@@ -1,5 +1,9 @@
-const { createUser, getUserByEmail, getAllUsers } = require('../services/user.service');
 const { generateToken } = require('../utils/jwt');
+const { createUser, 
+  getUserByEmail, 
+  getAllUsers, 
+  getUserById,
+} = require('../services/user.service');
 
 const userRegister = async (req, res) => {
   const { email } = req.body;
@@ -22,7 +26,20 @@ const findAllUsers = async (_req, res) => {
   return res.status(200).json(users);
 };
 
+const findUserById = async (req, res) => {
+  const { id } = req.params;
+
+  const user = await getUserById(id);
+
+  if (!user) {
+    return res.status(404).json({ message: 'User does not exist' });
+  }
+
+  return res.status(200).json(user);
+};
+
 module.exports = {
   userRegister,
   findAllUsers,
+  findUserById,
 };
