@@ -3,6 +3,7 @@ const express = require('express');
 const errorMiddleware = require('./middlewares/error');
 const validateLogin = require('./middlewares/validateLogin');
 const validateRegisterUser = require('./middlewares/validateRegisterUser');
+const validateAddCategory = require('./middlewares/validateAddCategory');
 const authenticateToken = require('./middlewares/validateToken');
 
 const { userLogin } = require('./controllers/login.controller');
@@ -10,9 +11,10 @@ const { userRegister,
   findAllUsers,
   findUserById,
 } = require('./controllers/user.controller');
-const validateAddCategory = require('./middlewares/validateAddCategory');
 
-const { addNewCategory } = require('./controllers/category.controller');
+const { addNewCategory,
+  getAllCategories,
+} = require('./controllers/category.controller');
 
 const app = express();
 
@@ -24,6 +26,7 @@ app.post('/user', validateRegisterUser, userRegister);
 
 app.post('/login', validateLogin, userLogin);
 
+app.get('/categories', authenticateToken, getAllCategories);
 app.post('/categories', authenticateToken, validateAddCategory, addNewCategory);
 
 app.use(errorMiddleware);
