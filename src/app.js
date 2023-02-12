@@ -16,7 +16,7 @@ const { addNewCategory,
   getAllCategories,
 } = require('./controllers/category.controller');
 
-const { getAllPosts } = require('./controllers/post.controller');
+const { getAllPosts, getPostsById } = require('./controllers/post.controller');
 
 const app = express();
 
@@ -32,6 +32,7 @@ app.get('/categories', authenticateToken, getAllCategories);
 app.post('/categories', authenticateToken, validateAddCategory, addNewCategory);
 
 app.get('/post', authenticateToken, getAllPosts);
+app.get('/post/:id', authenticateToken, getPostsById);
 
 app.use(errorMiddleware);
 
