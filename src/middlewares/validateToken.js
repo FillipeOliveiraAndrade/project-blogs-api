@@ -16,7 +16,7 @@ const authenticateToken = async (req, res, next) => {
 
   try {
     const verificationResponse = jwt.verify(authorization, TOKEN_SECRET);
-    req.user = verificationResponse.data;
+    req.user = verificationResponse;
     return next();
   } catch (err) {
 /*     const error = new Error('Expired or invalid token');

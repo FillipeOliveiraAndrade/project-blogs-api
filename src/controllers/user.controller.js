@@ -3,6 +3,7 @@ const { createUser,
   getUserByEmail, 
   getAllUsers, 
   getUserById,
+  deleteUserById,
 } = require('../services/user.service');
 
 const userRegister = async (req, res) => {
@@ -38,8 +39,17 @@ const findUserById = async (req, res) => {
   return res.status(200).json(user);
 };
 
+const deletingMyUser = async (req, res) => {
+  const { id } = req.user;
+
+  await deleteUserById(id); 
+
+  return res.status(204).end();
+};
+
 module.exports = {
   userRegister,
   findAllUsers,
   findUserById,
+  deletingMyUser,
 };

@@ -10,6 +10,7 @@ const { userLogin } = require('./controllers/login.controller');
 const { userRegister,
   findAllUsers,
   findUserById,
+  deletingMyUser,
 } = require('./controllers/user.controller');
 
 const { addNewCategory,
@@ -22,6 +23,7 @@ const app = express();
 
 app.use(express.json());
 
+app.delete('/user/me', authenticateToken, deletingMyUser);
 app.get('/user', authenticateToken, findAllUsers);
 app.get('/user/:id', authenticateToken, findUserById);
 app.post('/user', validateRegisterUser, userRegister);
