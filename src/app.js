@@ -21,9 +21,9 @@ const {
   getAllPosts, 
   getPostsById, 
   getTitleOrContentForQuery,
-  /* deletingMyPost */ 
+  updatePostById,
 } = require('./controllers/post.controller');
-// const validateDeleteBlogPost = require('./middlewares/validateDeletePost');
+const validateUpdatePost = require('./middlewares/validateUpdatePost');
 
 const app = express();
 
@@ -39,10 +39,10 @@ app.post('/login', validateLogin, userLogin);
 app.get('/categories', authenticateToken, getAllCategories);
 app.post('/categories', authenticateToken, validateAddCategory, addNewCategory);
 
-// app.delete('/post/:id', authenticateToken, validateDeleteBlogPost, deletingMyPost);
 app.get('/post', authenticateToken, getAllPosts);
 app.get('/post/search', authenticateToken, getTitleOrContentForQuery);
 app.get('/post/:id', authenticateToken, getPostsById);
+app.put('/post/:id', authenticateToken, validateUpdatePost, updatePostById);
 
 app.use(errorMiddleware);
 

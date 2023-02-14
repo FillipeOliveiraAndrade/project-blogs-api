@@ -1,8 +1,9 @@
 const {
   findAllPosts,
   findPostsById,
-  deletePostById,
   foundTitleOrContent,
+  updatedPost,
+  getBlogPostById,
 } = require('../services/post.service');
 
 const getAllPosts = async (_req, res) => {
@@ -23,14 +24,6 @@ const getPostsById = async (req, res) => {
   return res.status(200).json(data);
 };
 
-const deletingMyPost = async (req, res) => {
-  const { id } = req.params;
-
-  await deletePostById(id);
-
-  return res.status(204).end();
-};
-
 const getTitleOrContentForQuery = async (req, res) => {
   const { q } = req.query;
 
@@ -39,9 +32,25 @@ const getTitleOrContentForQuery = async (req, res) => {
   return res.status(200).json(post);
 };
 
+const updatePostById = async (req, res) => {
+  const { id } = req.params;
+  const { title, content } = req.body;
+  const data = { title, content, id, reqUserId: req.user.id };
+
+  const userId = await getBlogPostById(id);
+
+  if (req.user.id !== userId) {
+    return res.status(401).json({ message: 'Unauthorized user' });
+  }
+
+  const postUpdated = await updatedPost(data);
+
+  return res.status(200).json(postUpdated);
+};
+
 module.exports = { 
   getAllPosts,
   getPostsById,
-  deletingMyPost,
   getTitleOrContentForQuery,
+  updatePostById,
 };
