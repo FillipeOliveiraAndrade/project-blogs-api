@@ -1,4 +1,9 @@
-const { findAllPosts, findPostsById } = require('../services/post.service');
+const {
+  findAllPosts,
+  findPostsById,
+  deletePostById,
+  foundTitleOrContent,
+} = require('../services/post.service');
 
 const getAllPosts = async (_req, res) => {
   const data = await findAllPosts();
@@ -18,7 +23,25 @@ const getPostsById = async (req, res) => {
   return res.status(200).json(data);
 };
 
+const deletingMyPost = async (req, res) => {
+  const { id } = req.params;
+
+  await deletePostById(id);
+
+  return res.status(204).end();
+};
+
+const getTitleOrContentForQuery = async (req, res) => {
+  const { q } = req.query;
+
+  const post = await foundTitleOrContent(q);
+  
+  return res.status(200).json(post);
+};
+
 module.exports = { 
   getAllPosts,
   getPostsById,
+  deletingMyPost,
+  getTitleOrContentForQuery,
 };
