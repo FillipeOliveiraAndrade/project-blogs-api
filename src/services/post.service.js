@@ -1,5 +1,5 @@
 const { Op } = require('sequelize');
-const { BlogPost, User, Category } = require('../models');
+const { BlogPost, User, Category, PostCategory } = require('../models');
 
 const findAllPosts = async () => {
   const data = await BlogPost.findAll({
@@ -79,10 +79,45 @@ const updatedPost = async ({ title, content, id }) => {
   return result;
 };
 
+const removePostById = async ({ id, reqUserId }) => {
+  const post = await BlogPost.findByPk(id);
+
+  if (!post) {
+    return { type: 404, message: 'Post does not exist' };
+  }
+
+  if (post.userId !== reqUserId) {
+    return { type: 401, message: 'Unauthorized user' };
+  }
+
+  await BlogPost.destroy({ where: { id } });
+
+  return { type: null, message: null };
+};
+
+const createPost = async (title, content, userId, categoryIds) => {
+  const updated = Date();
+  const published = Date();
+  const result = await BlogPost.create({ title, content, userId, published, updated });
+  const pullResult = await BlogPost.findOne({ where: { title } });
+  await PostCategory.create({ postId: pullResult.id, categoryId: categoryIds[0] });
+  await PostCategory.create({ postId: pullResult.id, categoryId: categoryIds[1] });
+  return {
+    id: pullResult.id,
+    title: result.title,
+    content: result.content,
+    userId: result.userId,
+    updated: result.updated,
+    published: result.published,
+  };
+};
+
 module.exports = {
   findAllPosts,
   findPostsById,
   getBlogPostById,
   foundTitleOrContent,
   updatedPost,
+  removePostById,
+  createPost,
 };
